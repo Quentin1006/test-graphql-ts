@@ -1,0 +1,38 @@
+type Post {
+  id: Int!
+  title: String
+  author: Author
+  comments: [Comment]
+  votes: Int
+}
+
+type Author {
+  id: Int!
+  firstName: String
+  lastName: String
+  """
+  the list of Posts by this author
+  """
+  posts: [Post]
+  """
+  the list of Comment by this author
+  """
+  comments: [Comment]
+}
+
+type Comment {
+  id: Int!
+  author: Author!
+  text: String!
+  post: Post!
+}
+
+type Query {
+  project: String
+  posts: [Post]
+  post(id: Int!): Post
+  authors: [Author]
+  author(id: Int!): Author
+  comments: [Comment]
+  comment(id: Int!): Comment
+}
