@@ -12,9 +12,10 @@ run();
 
 async function run() {
   const db = new DB();
+  const schema = createSchema(db);
 
   const graphqlOptions: OptionsData = {
-    schema: createSchema(db),
+    schema,
     graphiql: true,
   };
 
