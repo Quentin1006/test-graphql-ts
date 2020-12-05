@@ -1,0 +1,99 @@
+# Abstract Structural type
+interface Node {
+  id: String!
+}
+
+interface Connection {
+  pageInfo: PageInfo!
+  nodes: [Node]!
+  totalCount: Int!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean
+  startCursor: String
+}
+# End Abstract Structural type
+
+type Comment {
+  id: String
+  author: User
+  text: String
+  post: Post
+  likes: CommentLikesConnection
+}
+
+type CommentLikesConnection {
+  pageInfo: PageInfo
+  nodes: [User]
+  totalCount: Int
+}
+
+type Post {
+  id: String
+  title: String
+  author: User
+  comments: PostCommentsConnection
+  votes: Int
+}
+
+type PostCommentsConnection {
+  nodes: [Comment]
+  pageInfo: PageInfo
+  totalCount: Int
+}
+
+type User {
+  id: String
+  firstName: String
+  lastName: String
+  """
+  the list of Posts by this author
+  """
+  posts: UserPostsConnection
+  """
+  the list of Comment by this author
+  """
+  comments: UserCommentsConnection
+}
+
+type UserPostsConnection {
+  nodes: [Post]
+  pageInfo: PageInfo
+  totalCount: Int
+}
+
+type UserCommentsConnection {
+  nodes: [Comment]
+  pageInfo: PageInfo
+  totalCount: Int
+}
+
+type UsersConnection {
+  nodes: [User]
+  pageInfo: PageInfo
+  totalCount: Int
+}
+
+type PostsConnection {
+  nodes: [Post]
+  pageInfo: PageInfo
+  totalCount: Int
+}
+
+type CommentsConnection {
+  nodes: [Comment]
+  pageInfo: PageInfo
+  totalCount: Int
+}
+
+type Query {
+  project: String
+  posts(limit: Int): PostsConnection
+  post(id: String!): Post
+  users: UsersConnection
+  user(id: String!): User
+  comments(limit: Int): CommentsConnection
+  comment(id: String!): Comment
+}

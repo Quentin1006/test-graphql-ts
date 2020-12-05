@@ -22,14 +22,15 @@
     "davidanson.vscode-markdownlint",
     "wix.vscode-import-cost",
     "coenraads.bracket-pair-colorizer",
-    "vscode-icons-team.vscode-icons"
+    "vscode-icons-team.vscode-icons",
+    "kumar-harsh.graphql-for-vscode"
   ],
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
+  "forwardPorts": [3000],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "yarn install",
+  "postCreateCommand": "npm install",
 
   // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "node"

@@ -1,13 +1,23 @@
 {
   "comments": [
-    { "id": 1, "userId": 2, "text": "Nice Post as usual !", "postId": 1 },
-    { "id": 2, "userId": 1, "text": "Thank you ! Means a lot", "postId": 1 },
+    { "id": "1", "userId": "2", "text": "Nice Post as usual !", "postId": "1" },
     {
-      "id": 3,
-      "userId": 2,
-      "text": "Are u planning a more advanced course ?",
-      "postId": 1
+      "id": "2",
+      "userId": "1",
+      "text": "Thank you ! Means a lot",
+      "postId": "1"
     },
-    { "id": 4, "userId": 1, "text": "Sure i'll keep you posted", "postId": 1 }
+    {
+      "id": "3",
+      "userId": "2",
+      "text": "Are u planning a more advanced course ?",
+      "postId": "1"
+    },
+    {
+      "id": "4",
+      "userId": "1",
+      "text": "Sure i'll keep you posted",
+      "postId": "1"
+    }
   ]
 }

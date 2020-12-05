@@ -1,60 +1,109 @@
-import { Author, Comment, Post, DBInterface, ID } from "../../../typings";
+import {
+  User,
+  Comment,
+  Post,
+  DBInterface,
+  DBResponseInterface,
+  ID,
+  ResponseConnection,
+  QueryOptions,
+} from "../../../typings";
+import { formatPaginatedResponse } from "./helpers";
 
 const resolvers = (db: DBInterface) => {
   return {
     Query: {
-      authors: async () => await db.find("authors"),
-      author: async (id: ID) =>
-        await db.findOne("authors", (author: Author) => author.id == id),
-      posts: async () => await db.find("posts"),
-      post: async (id: ID) =>
-        await db.findOne("post", (post: Post) => post.id == id),
-      project: async () => {
-        return await db.find("project");
+      users: async (root: any, args: any): Promise<ResponseConnection> => {
+        const { limit }: QueryOptions = args;
+        return formatPaginatedResponse(await db.findSome("users", { limit }));
       },
-      comments: async () => await db.find("comments"),
-      comment: async (id: ID) =>
-        await db.findOne("post", (comment: Comment) => comment.id == id),
+
+      user: async (root: any, args: any) => {
+        const id: string = args.id;
+        const resp: DBResponseInterface = await db.findOne(
+          "users",
+          (author: User) => author.id == id
+        );
+        return resp.data;
+      },
+
+      posts: async (root: any, args: any): Promise<ResponseConnection> => {
+        const limit: number = args.limit;
+        return formatPaginatedResponse(await db.findSome("posts", { limit }));
+      },
+
+      post: async (root: any, args: any) => {
+        const id: string = args.id;
+        return (await db.findOne("posts", (post: Post) => post.id == id)).data;
+      },
+
+      project: async () => {
+        return (await db.find("project")).data;
+      },
+      comments: async (): Promise<ResponseConnection> =>
+        formatPaginatedResponse(await db.find("comments")),
+      comment: async (root: any, args: any) => {
+        const id: string = args.id;
+        const resp: DBResponseInterface = await db.findOne(
+          "comments",
+          (comment: Comment) => comment.id == id
+        );
+
+        return resp.data;
+      },
     },
-    Author: {
-      posts: async (parent: any) => {
-        return await db.find(
-          "posts",
-          (post: Post) => post.authorId === parent.id
+    User: {
+      posts: async (user: any, args: any) => {
+        const { limit }: QueryOptions = args;
+        return formatPaginatedResponse(
+          await db.findSome(
+            "posts",
+            { limit },
+            (post: Post) => post.authorId === user.id
+          )
         );
       },
-      comments: async (parent: any) => {
-        return await db.find("comments", (comment: Comment) => {
-          console.log({ userId: comment.userId, parent });
-          return comment.userId === parent.id;
-        });
+      comments: async (user: any, args: any): Promise<ResponseConnection> => {
+        return formatPaginatedResponse(
+          await db.findSome("comments", { limit: 10 }, (comment: Comment) => {
+            return comment.userId === user.id;
+          })
+        );
       },
     },
     Comment: {
-      author: async (parent: any) => {
-        return await db.findOne(
-          "authors",
-          (author: Author) => author.id === parent.userId
+      author: async (comment: any) => {
+        const authorResult: DBResponseInterface = await db.findOne(
+          "users",
+          (author: User) => author.id === comment.userId
         );
+        return authorResult.data;
       },
-      post: async (parent: any) => {
-        const r_ = await db.findOne("posts", (post: Post) => {
-          console.log({ post, parent });
-          return post.id === parent.postId;
-        });
+      post: async (comment: any) => {
+        const postResult: DBResponseInterface = await db.findOne(
+          "posts",
+          (post: Post) => {
+            return post.id === comment.postId;
+          }
+        );
+        return postResult.data;
       },
     },
     Post: {
-      author: async (parent: any) => {
-        return await db.findOne(
-          "authors",
-          (author: Author) => author.id === parent.authorId
+      author: async (post: any) => {
+        const authorResult: DBResponseInterface = await db.findOne(
+          "users",
+          (author: User) => author.id === post.authorId
         );
+        return authorResult.data;
       },
-      comments: async (parent: any) => {
-        return await db.find(
-          "comments",
-          (comment: Comment) => comment.postId === parent.id
+      comments: async (post: any): Promise<ResponseConnection> => {
+        return formatPaginatedResponse(
+          await db.findSome(
+            "comments",
+            { limit: 10 },
+            (comment: Comment) => comment.postId === post.id
+          )
         );
       },
     },
