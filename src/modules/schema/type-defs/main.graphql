@@ -11,27 +11,27 @@ interface Connection {
 
 type PageInfo {
   endCursor: String
-  hasNextPage: Boolean!
+  hasNextPage: Boolean
   startCursor: String
 }
 # End Abstract Structural type
 
 type Comment {
-  id: String!
-  author: User!
-  text: String!
-  post: Post!
-  likes: CommentLikesConnection!
+  id: String
+  author: User
+  text: String
+  post: Post
+  likes: CommentLikesConnection
 }
 
 type CommentLikesConnection {
-  pageInfo: PageInfo!
-  nodes: [User]!
-  totalCount: Int!
+  pageInfo: PageInfo
+  nodes: [User]
+  totalCount: Int
 }
 
 type Post {
-  id: String!
+  id: String
   title: String
   author: User
   comments: PostCommentsConnection
@@ -40,12 +40,12 @@ type Post {
 
 type PostCommentsConnection {
   nodes: [Comment]
-  pageInfo: PageInfo!
-  totalCount: Int!
+  pageInfo: PageInfo
+  totalCount: Int
 }
 
 type User {
-  id: String!
+  id: String
   firstName: String
   lastName: String
   """
@@ -59,33 +59,33 @@ type User {
 }
 
 type UserPostsConnection {
-  nodes: [Post]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [Post]
+  pageInfo: PageInfo
+  totalCount: Int
 }
 
 type UserCommentsConnection {
-  nodes: [Comment]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [Comment]
+  pageInfo: PageInfo
+  totalCount: Int
 }
 
 type UsersConnection {
-  nodes: [User]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [User]
+  pageInfo: PageInfo
+  totalCount: Int
 }
 
 type PostsConnection {
-  nodes: [Post]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [Post]
+  pageInfo: PageInfo
+  totalCount: Int
 }
 
 type CommentsConnection {
-  nodes: [Comment]!
-  pageInfo: PageInfo!
-  totalCount: Int!
+  nodes: [Comment]
+  pageInfo: PageInfo
+  totalCount: Int
 }
 
 type Query {
