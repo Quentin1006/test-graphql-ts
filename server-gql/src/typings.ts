@@ -1,3 +1,5 @@
+import { Pool } from "pg";
+
 export type ID = string;
 export type MilliSeconds = number;
 
@@ -51,8 +53,7 @@ export interface ResponseConnection {
 }
 
 export interface DBInterface {
-  start(): Promise<DBInterface>;
-  get(): Promise<DBInterface>;
+  connect(): Promise<Pool | Error>;
   find(what: string, filter?: Function): Promise<DBResponseInterface>;
   findSome(
     what: string,
@@ -60,6 +61,5 @@ export interface DBInterface {
     filter?: Function
   ): Promise<DBResponseInterface>;
   findOne(what: string, filter?: Function): Promise<DBResponseInterface>;
-  set(field: string, newValue: any): Promise<Error | boolean>;
-  stop(): Promise<DBInterface>;
+  stop(): Promise<void>;
 }

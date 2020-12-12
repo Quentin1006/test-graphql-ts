@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+  db:
+    build:
+      context: ./db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: dbtest
+    volumes:
+      - ./db/pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  bff:
+    build:
+      context: ./server-gql
+    depends_on:
+      - db
+    environment:
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: dbtest
+      PGPORT: 5432
+    ports:
+      - 3000:3000
+volumes:
+  pgdata:
