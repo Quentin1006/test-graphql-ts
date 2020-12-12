@@ -16,6 +16,10 @@ export const buildPageInfo = (data: Node[], totalCount: number) => {
 export const formatPaginatedResponse = (
   resp: DBResponseInterface
 ): ResponseConnection => {
+  if (resp.err) {
+    throw resp.err;
+  }
+
   if (!Array.isArray(resp.data)) {
     throw new Error("Cannot build pagination out of an object");
   }
