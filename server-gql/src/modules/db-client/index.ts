@@ -1,5 +1,3 @@
-import fs, { Dirent } from "fs";
-import path from "path";
 import { Pool, QueryResult } from "pg";
 
 import {
