@@ -6,7 +6,7 @@ type ServerOptions = {
 };
 
 class ExpressServer {
-  protected port: number = 3000;
+  protected port = 3000;
   protected app: Application;
   protected server: Server;
 
