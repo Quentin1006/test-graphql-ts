@@ -52,14 +52,18 @@ export interface ResponseConnection {
   totalCount: number;
 }
 
+export interface NodeFilterFn {
+  <T extends Node>(result: T): boolean;
+}
+
 export interface DBInterface {
   connect(): Promise<Pool | Error>;
-  find(what: string, filter?: Function): Promise<DBResponseInterface>;
+  find(what: string, filter?: NodeFilterFn): Promise<DBResponseInterface>;
   findSome(
     what: string,
     queryOptions: QueryOptions,
-    filter?: Function
+    filter?: NodeFilterFn
   ): Promise<DBResponseInterface>;
-  findOne(what: string, filter?: Function): Promise<DBResponseInterface>;
+  findOne(what: string, filter?: NodeFilterFn): Promise<DBResponseInterface>;
   stop(): Promise<void>;
 }

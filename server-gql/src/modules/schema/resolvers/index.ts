@@ -4,13 +4,12 @@ import {
   Post,
   DBInterface,
   DBResponseInterface,
-  ID,
   ResponseConnection,
   QueryOptions,
 } from "../../../typings";
 import { formatPaginatedResponse } from "./helpers";
 
-const resolvers = (db: DBInterface) => {
+const resolvers = (db: DBInterface): any => {
   return {
     Query: {
       users: async (root: any, args: any): Promise<ResponseConnection> => {
@@ -22,7 +21,7 @@ const resolvers = (db: DBInterface) => {
         const id: string = args.id;
         const resp: DBResponseInterface = await db.findOne(
           "users",
-          (author: User) => author.id == id
+          <User>(author: User) => author.id === id
         );
         return resp.data;
       },
@@ -34,7 +33,8 @@ const resolvers = (db: DBInterface) => {
 
       post: async (root: any, args: any) => {
         const id: string = args.id;
-        return (await db.findOne("posts", (post: Post) => post.id == id)).data;
+        return (await db.findOne("posts", <Post>(post: Post) => post.id == id))
+          .data;
       },
 
       project: async () => {
@@ -46,7 +46,7 @@ const resolvers = (db: DBInterface) => {
         const id: string = args.id;
         const resp: DBResponseInterface = await db.findOne(
           "comments",
-          (comment: Comment) => comment.id == id
+          (comment: Comment) => comment.id === id
         );
 
         return resp.data;
@@ -82,9 +82,7 @@ const resolvers = (db: DBInterface) => {
       post: async (comment: any) => {
         const postResult: DBResponseInterface = await db.findOne(
           "posts",
-          (post: Post) => {
-            return post.id === comment.postId;
-          }
+          (post: Post) => post.id === comment.postId
         );
         return postResult.data;
       },
@@ -102,7 +100,7 @@ const resolvers = (db: DBInterface) => {
           await db.findSome(
             "comments",
             { limit: 10 },
-            (comment: Comment) => comment.postId === post.id
+            (comment: Comment): boolean => comment.postId === post.id
           )
         );
       },
