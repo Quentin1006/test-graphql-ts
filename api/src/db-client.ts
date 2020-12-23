@@ -1,8 +1,8 @@
 import { Pool, QueryResult } from "pg";
 
-import { DBInterface } from "./typings";
+import { IDBClient } from "./typings";
 
-class DBClient implements DBInterface {
+class DBClient implements IDBClient {
   protected pool: Pool;
 
   constructor() {
@@ -26,7 +26,7 @@ class DBClient implements DBInterface {
     return new Error(`Could not connect to the db,  ${retError}`);
   }
 
-  query(text: string, params: string[]): Promise<QueryResult> {
+  query(text: string, params?: (string | number)[]): Promise<QueryResult> {
     return this.pool.query(text, params);
   }
 

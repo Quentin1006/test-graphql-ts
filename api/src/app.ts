@@ -1,46 +1,33 @@
 import express, { Application } from "express";
+import winston, { Logger } from "winston";
 
-const app: Application = express();
+// Configs
+import { loggerConfig } from "./config";
 
-app.get("/", (req, res) => {
-  res.json({ hello: "Hello" });
-});
+import indexRouter from "./routes";
 
-app.get("/job-offers", (req, res) => {
-  res.json({ err: "Not implemented yet" });
-  /**
-   * id
-   * field
-   * salary
-   * company
-   * position
-   * startdate
-   */
-});
+// typings
+import { AppContext, IDBClient } from "./typings";
 
-app.get("/companies", (req, res) => {
-  res.json({ err: "Not implemented yet" });
-});
+export default (dbClient: IDBClient): Application => {
+  const app: Application = express();
+  const logger: Logger = winston.createLogger({
+    transports: [
+      new winston.transports.File(loggerConfig.fileInfo),
+      new winston.transports.File(loggerConfig.fileError),
+    ],
+    exitOnError: false, // do not exit on handled exceptions
+  });
 
-app.get("/companies/companyId", (req, res) => {
-  res.json({ err: "Not implemented yet" });
-  /**
-   * id
-   * name
-   * popularity
-   * size
-   */
-});
+  if (process.env.NODE_ENV !== "production") {
+    logger.add(new winston.transports.Console(loggerConfig.console));
+  }
 
-app.get("/job-status/:userId", (req, res) => {
-  res.json({ err: "Not implemented yet" });
-  /*
-    hasJob
-    isSearching
-    fieldInterest
-    salaryRange
+  const appCtx: AppContext<Logger> = {
+    dbClient,
+    logger,
+  };
+  app.use("/", indexRouter(appCtx));
 
-  */
-});
-
-export default app;
+  return app;
+};

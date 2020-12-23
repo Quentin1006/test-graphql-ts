@@ -2,8 +2,9 @@ import ExpressServer from "./express-server";
 import DBClient from "./db-client";
 import app from "./app";
 
-const server = new ExpressServer(app);
 const dbClient = new DBClient();
+const server = new ExpressServer(app(dbClient));
+
 
 run();
 

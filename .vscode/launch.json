@@ -1,0 +1,34 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "runtimeVersion": "14.15.1",
+      "request": "launch",
+      "name": "Debug Gql Server",
+      "preLaunchTask": "npm: build",
+      "program": "${workspaceFolder}/server-gql/src/index.ts",
+      "outFiles": ["${workspaceFolder}/server-gql/build/**/*.js"],
+      "smartStep": true,
+      "sourceMaps": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "runtimeVersion": "14.15.1",
+      "request": "launch",
+      "name": "Debug API Server",
+      "preLaunchTask": "npm: build - api",
+      "program": "${workspaceFolder}/api/src/index.ts",
+      "outFiles": ["${workspaceFolder}/api/build/**/*.js"],
+      "smartStep": true,
+      "sourceMaps": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
