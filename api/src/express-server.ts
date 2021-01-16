@@ -6,12 +6,12 @@ type ServerOptions = {
 };
 
 class ExpressServer {
-  protected port: number = 3000;
+  protected port: number;
   protected app: Application;
   protected server: Server;
 
-  constructor(app: Application, options: ServerOptions) {
-    this.port = options.port;
+  constructor(app: Application, options?: ServerOptions) {
+    this.port = options?.port || 3333;
     this.app = app;
     this.server = http.createServer(this.app);
   }
@@ -19,6 +19,7 @@ class ExpressServer {
   start(): Promise<Server> {
     return new Promise((resolve) => {
       this.server.listen(this.port, () => {
+        console.log(`Server running on port ${this.port}`);
         resolve(this.server);
       });
     });

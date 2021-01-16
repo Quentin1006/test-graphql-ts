@@ -17,21 +17,47 @@ services:
   adminer:
     image: adminer
     restart: always
-    ports:
-      - 8080:8080
 
   bff:
     build:
       context: ./server-gql
     depends_on:
       - db
+      - api
+      - reverse-proxy
     environment:
       PGHOST: db
       PGUSER: postgres
       PGPASSWORD: postgres
       PGDATABASE: dbtest
       PGPORT: 5432
+
+  api:
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: development
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: job_platform
+      PGPORT: 5432
+    build:
+      context: ./api
+
+  reverse-proxy:
+    depends_on:
+      - web
+      - adminer
+    build:
+      context: ./reverse-proxy
     ports:
-      - 3000:3000
+      - 80:80
+  web:
+    environment:
+      NODE_ENV: development
+    build:
+      context: ./web
+
 volumes:
   pgdata:
