@@ -4,11 +4,17 @@ import { verifyUser } from "./helper";
 import JobController from "../controllers/job.controller";
 import CompanyController from "../controllers/company.controller";
 
-import { AppContext, ICompanyController, IJobController } from "../typings";
+import {
+  AppContext,
+  ICompanyController,
+  IJobController,
+  ILogger,
+  JobOfferPayload,
+} from "../typings";
 
 const router = express.Router();
 
-export default (ctx: AppContext) => {
+export default <Logger extends ILogger>(ctx: AppContext<Logger>) => {
   // @TODO: register controller automatically
   const jobController: IJobController = JobController(ctx.dbClient);
   const companyController: ICompanyController = CompanyController(ctx.dbClient);
@@ -30,9 +36,21 @@ export default (ctx: AppContext) => {
     res.json(ctrlResponse);
   });
 
+  router.post("/job-offer", async (req, res) => {
+    const offerPayload: JobOfferPayload = req.body;
+    const ctrlResponse = await jobController.createOrUpdateOffer(offerPayload);
+    res.json(ctrlResponse);
+  });
+
+  router.post("/job-offers/:id", async (req, res) => {
+    const offerPayload: JobOfferPayload = req.body;
+    const ctrlResponse = await jobController.createOrUpdateOffer(offerPayload);
+    res.json(ctrlResponse);
+  });
+
   router.get("/job-offers/company/:companyId", async (req, res) => {
     const companyId: number = Number(req.params.companyId);
-    const ctrlResponse = await jobController.getOffersByCompany(companyId);
+    const ctrlResponse = await jobController.getOffersFromCompany(companyId);
     res.json(ctrlResponse);
   });
 

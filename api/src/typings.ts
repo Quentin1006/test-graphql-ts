@@ -21,15 +21,29 @@ export type AppContext<LoggerInstance extends ILogger> = {
 };
 export interface IDBClient {
   connect(): Promise<Pool | Error>;
-  query(text: string, params?: (string | number)[]): Promise<QueryResult>;
+  query(text: string, params?: any[]): Promise<QueryResult>;
   stop(): Promise<void>;
 }
+
+export type DBQuery = {
+  query: string;
+  params: any[];
+};
 
 export type JobOffer = {
   id: number;
   fields: string[];
   salary: string;
   company: Company;
+  position: string;
+  startdate: Date;
+};
+
+export type JobOfferPayload = {
+  id?: number;
+  fields?: string[];
+  salary: SalaryRange;
+  companyId: number;
   position: string;
   startdate: Date;
 };
@@ -54,18 +68,33 @@ export type SalaryRange = {
 };
 
 export interface IJobController {
-  getOffers(): Promise<IControllerResponse<JobOffer>>;
-  getOffer(offerId: number): Promise<IControllerResponse<JobOffer>>;
-  getOffersByCompany(companyId: number): Promise<IControllerResponse<JobOffer>>;
+  getOffers(): Promise<IDataArrayResponse<JobOffer>>;
+  getOffer(offerId: number): Promise<IDataArrayResponse<JobOffer>>;
+  getOffersFromCompany(
+    companyId: number
+  ): Promise<IDataArrayResponse<JobOffer>>;
+  createOrUpdateOffer(
+    offerPayload: JobOfferPayload
+  ): Promise<IDataArrayResponse<JobOffer>>;
 }
 
 export interface ICompanyController {
-  getCompanies(): Promise<IControllerResponse<Company>>;
-  getCompany(companyId: number): Promise<IControllerResponse<Company>>;
+  getCompanies(): Promise<IDataArrayResponse<Company>>;
+  getCompany(companyId: number): Promise<IDataArrayResponse<Company>>;
 }
 
-export interface IControllerResponse<T> {
+export interface IDataArrayResponse<T> {
   data: Array<T>;
   err?: Error;
   info?: any;
+}
+
+export interface IDataResponse<T> {
+  data?: T;
+  err?: Error;
+  info?: any;
+}
+
+export interface IPayloadSchema<Payload> {
+  validate(p: Payload): Promise<IDataResponse<Payload>>;
 }

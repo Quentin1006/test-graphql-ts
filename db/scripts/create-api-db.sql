@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS joboffer (
 	joboffer__company_id INT,
 	joboffer__position VARCHAR(255),
 	joboffer__startdate INT,
-  	joboffer__salary INT,
+  joboffer__salary INT,
 	CONSTRAINT fk_company_id 
 		FOREIGN KEY (joboffer__company_id) 
 		REFERENCES company(company__id)

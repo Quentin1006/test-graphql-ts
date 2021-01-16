@@ -1,5 +1,5 @@
 import {
-  IControllerResponse,
+  IDataArrayResponse,
   IDBClient,
   Company,
   ICompanyController,
@@ -7,7 +7,7 @@ import {
 import { QueryResult } from "pg";
 
 export default (dbClient: IDBClient): ICompanyController => {
-  const getCompanies = async (): Promise<IControllerResponse<Company>> => {
+  const getCompanies = async (): Promise<IDataArrayResponse<Company>> => {
     const query = `
       SELECT *
       FROM company AS c
@@ -38,7 +38,7 @@ export default (dbClient: IDBClient): ICompanyController => {
 
   const getCompany = async (
     companyId: number
-  ): Promise<IControllerResponse<Company>> => {
+  ): Promise<IDataArrayResponse<Company>> => {
     const query = `
       SELECT *
       FROM company AS c 
