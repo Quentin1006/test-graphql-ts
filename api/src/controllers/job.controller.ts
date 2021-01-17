@@ -1,7 +1,6 @@
 import { QueryResult } from "pg";
 
 import {
-  Company,
   IDataResponse,
   IDataArrayResponse,
   IDBClient,

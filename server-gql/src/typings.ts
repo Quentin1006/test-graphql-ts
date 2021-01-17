@@ -52,9 +52,7 @@ export interface ResponseConnection {
   totalCount: number;
 }
 
-export interface NodeFilterFn {
-  <T extends Node>(result: T): boolean;
-}
+export type NodeFilterFn = (result: any) => boolean;
 
 export interface DBInterface {
   connect(): Promise<Pool | Error>;

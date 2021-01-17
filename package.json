@@ -1,41 +1,26 @@
 {
-  "name": "graphql-ts-trial",
-  "version": "0.0.1",
+  "name": "bff",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "workspaces": [
+    "api",
+    "server-gql",
+    "ui"
+  ],
   "scripts": {
-    "start": "npm run build && node build/index.js",
-    "start:dev": "ts-node ./src/index.ts",
-    "start:dev:watch": "nodemon",
-    "lint": "eslint . --ext .ts",
-    "build": "rimraf ./build && tsc && copyfiles -u 1 ./src/**/*.graphql ./build/ && copyfiles -u 1 ./src/**/*.json ./build/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .ts,.js,.tsx,.jsx,.json.yml,.yaml"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Quentin1006/test-graphql-ts.git"
+  },
+  "keywords": [],
+  "author": "quentin.sahal@gmail.com",
   "license": "ISC",
-  "devDependencies": {
-    "@types/express": "^4.17.8",
-    "@types/node": "^14.11.8",
-    "@types/pg": "^7.14.7",
-    "@typescript-eslint/eslint-plugin": "^4.9.1",
-    "@typescript-eslint/parser": "^4.9.1",
-    "copyfiles": "^2.4.1",
-    "eslint": "^7.15.0",
-    "nodemon": "^2.0.4",
-    "prettier": "^2.1.2",
-    "rimraf": "^3.0.2",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
+  "bugs": {
+    "url": "https://github.com/Quentin1006/test-graphql-ts/issues"
   },
-  "dependencies": {
-    "@graphql-tools/graphql-file-loader": "^6.2.5",
-    "@graphql-tools/load": "^6.2.5",
-    "@graphql-tools/load-files": "^6.2.4",
-    "@graphql-tools/merge": "^6.2.5",
-    "@graphql-tools/schema": "^7.0.0",
-    "express": "^4.17.1",
-    "express-graphql": "^0.11.0",
-    "graphql": "^15.3.0",
-    "pg": "^8.5.1"
-  }
+  "homepage": "https://github.com/Quentin1006/test-graphql-ts#readme"
 }

@@ -21,7 +21,7 @@ const resolvers = (db: DBInterface): any => {
         const id: string = args.id;
         const resp: DBResponseInterface = await db.findOne(
           "users",
-          <User>(author: User) => author.id === id
+          (author: User) => author.id === id
         );
         return resp.data;
       },
@@ -33,8 +33,7 @@ const resolvers = (db: DBInterface): any => {
 
       post: async (root: any, args: any) => {
         const id: string = args.id;
-        return (await db.findOne("posts", <Post>(post: Post) => post.id == id))
-          .data;
+        return (await db.findOne("posts", (post: Post) => post.id == id)).data;
       },
 
       project: async () => {
@@ -63,7 +62,7 @@ const resolvers = (db: DBInterface): any => {
           )
         );
       },
-      comments: async (user: any, args: any): Promise<ResponseConnection> => {
+      comments: async (user: any): Promise<ResponseConnection> => {
         return formatPaginatedResponse(
           await db.findSome("comments", { limit: 10 }, (comment: Comment) => {
             return comment.userId === user.id;

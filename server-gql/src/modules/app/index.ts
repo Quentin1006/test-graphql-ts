@@ -13,7 +13,7 @@ export default (grapqhlOptions: OptionsData): Application => {
   );
 
   app.get("/", (req, res) => {
-    res.send("Hello");
+    res.send("Hello From Graphql");
   });
 
   return app;

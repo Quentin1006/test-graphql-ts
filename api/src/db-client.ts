@@ -10,7 +10,7 @@ class DBClient implements IDBClient {
   }
 
   async connect(): Promise<Pool | Error> {
-    let retries: number = 5;
+    let retries = 5;
     let retError: Error | null = null;
     while (retries > 0) {
       try {
