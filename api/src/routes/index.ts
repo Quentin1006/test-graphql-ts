@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { verifyUser } from "./helper";
 
 import JobController from "../controllers/job.controller";
@@ -14,7 +14,7 @@ import {
 
 const router = express.Router();
 
-export default <Logger extends ILogger>(ctx: AppContext<Logger>) => {
+export default <Logger extends ILogger>(ctx: AppContext<Logger>): Router => {
   // @TODO: register controller automatically
   const jobController: IJobController = JobController(ctx.dbClient);
   const companyController: ICompanyController = CompanyController(ctx.dbClient);
@@ -22,7 +22,7 @@ export default <Logger extends ILogger>(ctx: AppContext<Logger>) => {
   router.use("*", verifyUser);
 
   router.get("/", (req, res) => {
-    res.json({ hello: "Hello" });
+    res.json({ hello: "Hello From Api" });
   });
 
   router.get("/job-offers", async (req, res) => {
@@ -31,7 +31,7 @@ export default <Logger extends ILogger>(ctx: AppContext<Logger>) => {
   });
 
   router.get("/job-offers/:offerId", async (req, res) => {
-    const offerId: number = Number(req.params.offerId);
+    const offerId = Number(req.params.offerId);
     const ctrlResponse = await jobController.getOffer(offerId);
     res.json(ctrlResponse);
   });
@@ -49,7 +49,7 @@ export default <Logger extends ILogger>(ctx: AppContext<Logger>) => {
   });
 
   router.get("/job-offers/company/:companyId", async (req, res) => {
-    const companyId: number = Number(req.params.companyId);
+    const companyId = Number(req.params.companyId);
     const ctrlResponse = await jobController.getOffersFromCompany(companyId);
     res.json(ctrlResponse);
   });
@@ -60,7 +60,7 @@ export default <Logger extends ILogger>(ctx: AppContext<Logger>) => {
   });
 
   router.get("/companies/:companyId", async (req, res) => {
-    const companyId: number = Number(req.params.companyId);
+    const companyId = Number(req.params.companyId);
     const ctrlResponse = await companyController.getCompany(companyId);
     res.json(ctrlResponse);
   });

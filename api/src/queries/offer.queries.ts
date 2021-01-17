@@ -65,7 +65,7 @@ export const buildUpdateOfferQuery = (payload: JobOfferPayload): DBQuery => {
 };
 
 export const buildInsertOfferQuery = (payload: JobOfferPayload): DBQuery => {
-  let { position, salary: salaryRange, startdate, companyId } = payload;
+  const { position, salary: salaryRange, startdate, companyId } = payload;
   // salary is redefined here
   // For simplicity in the db we store the min and max range as one string
   const salary = `${salaryRange.minSalary}-${salaryRange.maxSalary}`;

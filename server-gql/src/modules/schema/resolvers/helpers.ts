@@ -2,9 +2,10 @@ import {
   ResponseConnection,
   DBResponseInterface,
   Node,
+  PageInfo,
 } from "../../../typings";
 
-export const buildPageInfo = (data: Node[], totalCount: number) => {
+export const buildPageInfo = (data: Node[], totalCount: number): PageInfo => {
   const lastCount: number = data.length - 1;
   return {
     startCursor: data[0].id,

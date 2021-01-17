@@ -4,6 +4,7 @@ import {
   DBResponseInterface,
   DBInterface,
   Node,
+  NodeFilterFn,
   QueryOptions,
 } from "../../typings";
 
@@ -15,7 +16,7 @@ class DBClient implements DBInterface {
   }
 
   async connect(): Promise<Pool | Error> {
-    let retries: number = 5;
+    let retries = 5;
     let retError: Error | null = null;
     while (retries > 0) {
       try {
@@ -31,13 +32,18 @@ class DBClient implements DBInterface {
     return new Error(`Could not connect to the db,  ${retError}`);
   }
 
-  async find(what: string, filter?: Function): Promise<DBResponseInterface> {
+  async find(
+    what: string,
+    filter?: NodeFilterFn
+  ): Promise<DBResponseInterface> {
     try {
       let { rows }: QueryResult = await this.pool.query(
         `SELECT * FROM ${what}`
       );
       if (filter) {
-        rows = rows.filter((result: Node) => filter(result));
+        rows = rows.filter(<T extends Node>(result: T): boolean =>
+          filter(result)
+        );
       }
 
       return {
@@ -52,7 +58,10 @@ class DBClient implements DBInterface {
     }
   }
 
-  async findOne(what: string, filter?: Function): Promise<DBResponseInterface> {
+  async findOne(
+    what: string,
+    filter?: NodeFilterFn
+  ): Promise<DBResponseInterface> {
     const dbResponse: DBResponseInterface = await this.find(what, filter);
 
     if (dbResponse.err) {
@@ -71,7 +80,7 @@ class DBClient implements DBInterface {
   async findSome(
     what: string,
     queryOptions: QueryOptions,
-    filter?: Function
+    filter?: NodeFilterFn
   ): Promise<DBResponseInterface> {
     const dbResponse: DBResponseInterface = await this.find(what, filter);
     const { totalCount } = dbResponse;
