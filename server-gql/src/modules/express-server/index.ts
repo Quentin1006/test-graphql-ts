@@ -1,24 +1,29 @@
 import { Application } from "express";
-import http, { Server } from "http";
+import { ApolloServer, ApolloServerExpressConfig } from "apollo-server-express";
 
 type ServerOptions = {
   port: number;
+  graphqlOptions: ApolloServerExpressConfig;
 };
 
 class ExpressServer {
   protected port = 3000;
   protected app: Application;
-  protected server: Server;
+  protected server: ApolloServer;
 
   constructor(app: Application, options: ServerOptions) {
     this.port = options.port;
     this.app = app;
-    this.server = http.createServer(this.app);
+    this.server = new ApolloServer({
+      ...options.graphqlOptions,
+    });
+
+    this.server.applyMiddleware({ app: this.app });
   }
 
-  start(): Promise<Server> {
+  start(): Promise<ApolloServer> {
     return new Promise((resolve) => {
-      this.server.listen(this.port, () => {
+      this.app.listen(this.port, () => {
         resolve(this.server);
       });
     });
