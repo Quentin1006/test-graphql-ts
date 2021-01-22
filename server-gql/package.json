@@ -7,7 +7,7 @@
     "start": "npm run build && node build/index.js",
     "start:dev": "ts-node ./src/index.ts",
     "start:dev:watch": "nodemon",
-    "lint": "eslint . --ext .ts --debug",
+    "lint": "eslint . --ext .ts",
     "build": "rimraf ./build && tsc && copyfiles -u 1 ./src/**/*.graphql ./build/ && copyfiles -u 1 ./src/**/*.json ./build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

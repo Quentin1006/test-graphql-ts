@@ -3,7 +3,7 @@ import {
   DBResponseInterface,
   Node,
   PageInfo,
-} from "../../../typings";
+} from "../../../../typings";
 
 export const buildPageInfo = (data: Node[], totalCount: number): PageInfo => {
   const lastCount: number = data.length - 1;
