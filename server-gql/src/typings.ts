@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 
-export type ID = string;
+export type ID = string | number;
 export type MilliSeconds = number;
 
 export type Node = {
@@ -27,6 +27,14 @@ export interface Comment extends Node {
   postId: ID;
 }
 
+export interface JobOffer extends Node {
+  id: ID;
+  salary: string;
+  companyName: string;
+  position: string;
+  startdate: number;
+}
+
 export type QueryOptions = {
   from?: string;
   limit?: number;
@@ -41,9 +49,9 @@ export interface DBResponseInterface {
 }
 
 export type PageInfo = {
-  endCursor: string;
+  endCursor: number | string;
   hasNextPage: boolean;
-  startCursor: string;
+  startCursor: number | string;
 };
 
 export interface ResponseConnection {

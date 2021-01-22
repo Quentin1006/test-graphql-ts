@@ -4,6 +4,7 @@ import {
   Post,
   DBInterface,
   DBResponseInterface,
+  JobOffer,
   ResponseConnection,
   QueryOptions,
 } from "../../../typings";
@@ -39,6 +40,7 @@ const resolvers = (db: DBInterface): any => {
       project: async () => {
         return (await db.find("project")).data;
       },
+
       comments: async (): Promise<ResponseConnection> =>
         formatPaginatedResponse(await db.find("comments")),
       comment: async (root: any, args: any) => {
@@ -49,6 +51,46 @@ const resolvers = (db: DBInterface): any => {
         );
 
         return resp.data;
+      },
+
+      joboffers: async (
+        root: any,
+        args: any,
+        context: any
+      ): Promise<ResponseConnection> => {
+        const jobAPIFetcher: any = context.dataSources.jobAPIFetcher;
+        let jobOffers;
+        try {
+          jobOffers = await jobAPIFetcher.getJobOffers();
+        } catch (err) {
+          console.log({ err });
+          return formatPaginatedResponse({
+            err,
+            totalCount: -1,
+          });
+        }
+
+        return formatPaginatedResponse({
+          data: jobOffers,
+          totalCount: jobOffers.length,
+        });
+      },
+
+      joboffer: async (
+        root: any,
+        args: any,
+        context: any
+      ): Promise<JobOffer | Error> => {
+        const jobAPIFetcher: any = context.dataSources.jobAPIFetcher;
+        let jobOffer: JobOffer;
+        // TODO: replace with an id as argument
+        try {
+          jobOffer = await jobAPIFetcher.getJobOffer(1);
+        } catch (err) {
+          console.log({ err });
+          return err;
+        }
+        return jobOffer;
       },
     },
     User: {
@@ -103,6 +145,10 @@ const resolvers = (db: DBInterface): any => {
           )
         );
       },
+    },
+
+    JobOffer: {
+      companyName: (joboffer: any) => joboffer.company.name,
     },
   };
 };

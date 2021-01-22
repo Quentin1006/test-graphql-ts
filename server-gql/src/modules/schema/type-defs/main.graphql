@@ -88,6 +88,20 @@ type CommentsConnection {
   totalCount: Int
 }
 
+type JobOffer {
+  id: Int
+  salary: String
+  companyName: String
+  position: String
+  startdate: Int
+}
+
+type JobOffersConnection {
+  nodes: [JobOffer]
+  pageInfo: PageInfo
+  totalCount: Int
+}
+
 type Query {
   project: String
   posts(limit: Int): PostsConnection
@@ -96,4 +110,6 @@ type Query {
   user(id: String!): User
   comments(limit: Int): CommentsConnection
   comment(id: String!): Comment
+  joboffers: JobOffersConnection
+  joboffer(offerId: Int): JobOffer
 }
