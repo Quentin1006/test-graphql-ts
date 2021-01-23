@@ -1,27 +1,21 @@
 import { Pool, QueryResult } from "pg";
 
-import {
-  DBResponseInterface,
-  DBInterface,
-  Node,
-  NodeFilterFn,
-  QueryOptions,
-} from "../../typings";
+import { IDBResponse, IDBClient, Node, NodeFilterFn, QueryOptions } from "../../typings";
 
-class DBClient implements DBInterface {
+class DBClient implements IDBClient {
   protected pool: Pool;
 
   constructor() {
     this.pool = new Pool();
   }
 
-  async connect(): Promise<Pool | Error> {
+  async connect(): Promise<boolean | Error> {
     let retries = 5;
     let retError: Error | null = null;
     while (retries > 0) {
       try {
         await this.pool.connect();
-        return this.pool;
+        return true;
       } catch (error) {
         console.warn(error);
         retries -= 1;
@@ -32,18 +26,11 @@ class DBClient implements DBInterface {
     return new Error(`Could not connect to the db,  ${retError}`);
   }
 
-  async find(
-    what: string,
-    filter?: NodeFilterFn
-  ): Promise<DBResponseInterface> {
+  async find(what: string, filter?: NodeFilterFn): Promise<IDBResponse> {
     try {
-      let { rows }: QueryResult = await this.pool.query(
-        `SELECT * FROM ${what}`
-      );
+      let { rows }: QueryResult = await this.pool.query(`SELECT * FROM ${what}`);
       if (filter) {
-        rows = rows.filter(<T extends Node>(result: T): boolean =>
-          filter(result)
-        );
+        rows = rows.filter(<T extends Node>(result: T): boolean => filter(result));
       }
 
       return {
@@ -58,11 +45,8 @@ class DBClient implements DBInterface {
     }
   }
 
-  async findOne(
-    what: string,
-    filter?: NodeFilterFn
-  ): Promise<DBResponseInterface> {
-    const dbResponse: DBResponseInterface = await this.find(what, filter);
+  async findOne(what: string, filter?: NodeFilterFn): Promise<IDBResponse> {
+    const dbResponse: IDBResponse = await this.find(what, filter);
 
     if (dbResponse.err) {
       return { err: dbResponse.err, totalCount: 0 };
@@ -80,9 +64,9 @@ class DBClient implements DBInterface {
   async findSome(
     what: string,
     queryOptions: QueryOptions,
-    filter?: NodeFilterFn
-  ): Promise<DBResponseInterface> {
-    const dbResponse: DBResponseInterface = await this.find(what, filter);
+    filter?: NodeFilterFn,
+  ): Promise<IDBResponse> {
+    const dbResponse: IDBResponse = await this.find(what, filter);
     const { totalCount } = dbResponse;
 
     if (dbResponse.err) {
@@ -94,15 +78,12 @@ class DBClient implements DBInterface {
 
     const cursorStartIdx = Math.max(
       allResults.findIndex((result: Node) => result.id === from),
-      0
+      0,
     );
 
     const cursorEndIdx = Math.min(limit + cursorStartIdx, allResults.length);
 
-    const someResult =
-      allResults.length > 0
-        ? allResults.slice(cursorStartIdx, cursorEndIdx)
-        : [];
+    const someResult = allResults.length > 0 ? allResults.slice(cursorStartIdx, cursorEndIdx) : [];
 
     return {
       totalCount,
