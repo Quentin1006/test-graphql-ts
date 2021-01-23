@@ -1,5 +1,5 @@
 {
-  "name": "graphql-server",
+  "name": "service-gql",
   "version": "0.0.1",
   "description": "",
   "main": "build/index.js",
