@@ -4,13 +4,13 @@ import { JobAPIFetcher } from "./modules/datasources";
 
 import { Adapter, DBClient } from "./entities";
 
-import { jobApiBaseUrl } from "./config";
+import { JOB_API_BASEURL } from "./config";
 
 import { IDBClient, IAPIFetchersMap } from "./typings";
 
 const dbClient: IDBClient = new DBClient();
 const apiFetchers: IAPIFetchersMap = {
-  jobAPIFetcher: new JobAPIFetcher(jobApiBaseUrl),
+  jobAPIFetcher: new JobAPIFetcher(JOB_API_BASEURL),
 };
 
 const DBClientAdapter = new Adapter<IDBClient>(dbClient);
