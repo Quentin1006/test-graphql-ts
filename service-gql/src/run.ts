@@ -5,7 +5,7 @@ import { GraphQLServer } from "./entities";
 import { createTypeDefsAndResolvers } from "./modules/schema";
 import createExpressApp from "./modules/app";
 
-import { port } from "./config";
+import { PORT, USE_PLAYGROUND } from "./config";
 
 import { IAdapter } from "./typings";
 
@@ -25,11 +25,11 @@ export const run = async (
     context: {
       db: dbClient,
     },
-    playground: true,
+    playground: USE_PLAYGROUND,
   };
 
   const app = createExpressApp();
-  const server = new GraphQLServer(app, { port, graphqlOptions });
+  const server = new GraphQLServer(app, { port: PORT, graphqlOptions });
 
   await Promise.all([dbClient.connect(), server.start()]);
 
