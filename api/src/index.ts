@@ -1,10 +1,10 @@
 import ExpressServer from "./express-server";
 import DBClient from "./db-client";
 import app from "./app";
+import { PORT } from "./config/app.config";
 
 const dbClient = new DBClient();
-const server = new ExpressServer(app(dbClient));
-
+const server = new ExpressServer(app(dbClient), { port: PORT });
 
 run();
 

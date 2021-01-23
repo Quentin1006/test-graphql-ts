@@ -18,9 +18,9 @@ services:
     image: adminer
     restart: always
 
-  server-gql:
+  service-gql:
     build:
-      context: ./server-gql
+      context: ./service-gql
     depends_on:
       - db
       - api
@@ -31,6 +31,8 @@ services:
       PGPASSWORD: postgres
       PGDATABASE: dbtest
       PGPORT: 5432
+      PORT: 3000
+      API_URL: http://api:3333
     ports:
       - 3000:3000
 
@@ -44,6 +46,7 @@ services:
       PGPASSWORD: postgres
       PGDATABASE: job_platform
       PGPORT: 5432
+      PORT: 3333
     build:
       context: ./api
 
