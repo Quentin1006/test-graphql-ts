@@ -6,13 +6,13 @@ type ServerOptions = {
   graphqlOptions: ApolloServerExpressConfig;
 };
 
-class ExpressServer {
-  protected port = 3000;
+class GraphQLServer {
+  protected port: number;
   protected app: Application;
   protected server: ApolloServer;
 
   constructor(app: Application, options: ServerOptions) {
-    this.port = options.port;
+    this.port = options.port || 3000;
     this.app = app;
     this.server = new ApolloServer({
       ...options.graphqlOptions,
@@ -30,4 +30,4 @@ class ExpressServer {
   }
 }
 
-export default ExpressServer;
+export default GraphQLServer;

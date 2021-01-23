@@ -1,9 +1,4 @@
-import {
-  ResponseConnection,
-  DBResponseInterface,
-  Node,
-  PageInfo,
-} from "../../../../typings";
+import { Paginated, IDBResponse, Node, PageInfo } from "../../../../typings";
 
 export const buildPageInfo = (data: Node[], totalCount: number): PageInfo => {
   const lastCount: number = data.length - 1;
@@ -14,9 +9,7 @@ export const buildPageInfo = (data: Node[], totalCount: number): PageInfo => {
   };
 };
 
-export const formatPaginatedResponse = (
-  resp: DBResponseInterface
-): ResponseConnection => {
+export const formatPaginatedResponse = (resp: IDBResponse): Paginated<any> => {
   if (resp.err) {
     throw resp.err;
   }
