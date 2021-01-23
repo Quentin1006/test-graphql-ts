@@ -2,155 +2,160 @@ import {
   User,
   Comment,
   Post,
-  DBInterface,
-  DBResponseInterface,
+  IGraphQLContext,
+  IDBResponse,
+  IMap,
   JobOffer,
-  ResponseConnection,
+  Paginated,
   QueryOptions,
+  Data,
 } from "../../../typings";
 import { formatPaginatedResponse } from "./helpers";
 
-const resolvers = (db: DBInterface): any => {
-  return {
-    Query: {
-      users: async (root: any, args: any): Promise<ResponseConnection> => {
-        const { limit }: QueryOptions = args;
-        return formatPaginatedResponse(await db.findSome("users", { limit }));
-      },
+const resolvers = {
+  Query: {
+    users: async (root: IMap, args: IMap, { db }: IGraphQLContext): Promise<Paginated<User>> => {
+      const { limit }: QueryOptions = args;
+      return formatPaginatedResponse(await db.findSome("users", { limit }));
+    },
 
-      user: async (root: any, args: any) => {
-        const id: string = args.id;
-        const resp: DBResponseInterface = await db.findOne(
-          "users",
-          (author: User) => author.id === id
-        );
-        return resp.data;
-      },
+    user: async (root: IMap, args: IMap, { db }: IGraphQLContext): Promise<User> => {
+      const id: string = args.id;
+      const resp: IDBResponse = await db.findOne("users", (author: User) => author.id === id);
+      return resp.data as User;
+    },
 
-      posts: async (root: any, args: any): Promise<ResponseConnection> => {
-        const limit: number = args.limit;
-        return formatPaginatedResponse(await db.findSome("posts", { limit }));
-      },
+    posts: async (root: IMap, args: IMap, { db }: IGraphQLContext): Promise<Paginated<Post>> => {
+      const limit: number = args.limit;
+      return formatPaginatedResponse(await db.findSome("posts", { limit }));
+    },
 
-      post: async (root: any, args: any) => {
-        const id: string = args.id;
-        return (await db.findOne("posts", (post: Post) => post.id == id)).data;
-      },
+    post: async (root: IMap, args: IMap, { db }: IGraphQLContext): Promise<Post> => {
+      const id: string = args.id;
+      return (await db.findOne("posts", (post: Post) => post.id == id)).data as Post;
+    },
 
-      project: async () => {
-        return (await db.find("project")).data;
-      },
+    project: async (root: IMap, args: IMap, { db }: IGraphQLContext): Promise<Data> => {
+      return (await db.find("project")).data;
+    },
 
-      comments: async (): Promise<ResponseConnection> =>
-        formatPaginatedResponse(await db.find("comments")),
-      comment: async (root: any, args: any) => {
-        const id: string = args.id;
-        const resp: DBResponseInterface = await db.findOne(
-          "comments",
-          (comment: Comment) => comment.id === id
-        );
+    comments: async (
+      root: IMap,
+      args: IMap,
+      { db }: IGraphQLContext,
+    ): Promise<Paginated<Comment>> => formatPaginatedResponse(await db.find("comments")),
 
-        return resp.data;
-      },
+    comment: async (root: IMap, args: IMap, { db }: IGraphQLContext): Promise<Comment> => {
+      const id: string = args.id;
+      const resp: IDBResponse = await db.findOne(
+        "comments",
+        (comment: Comment) => comment.id === id,
+      );
 
-      joboffers: async (
-        root: any,
-        args: any,
-        context: any
-      ): Promise<ResponseConnection> => {
-        const jobAPIFetcher: any = context.dataSources.jobAPIFetcher;
-        let jobOffers;
-        try {
-          jobOffers = await jobAPIFetcher.getJobOffers();
-        } catch (err) {
-          console.log({ err });
-          return formatPaginatedResponse({
-            err,
-            totalCount: -1,
-          });
-        }
+      return resp.data as Comment;
+    },
 
+    joboffers: async (
+      root: IMap,
+      args: IMap,
+      { dataSources }: IGraphQLContext,
+    ): Promise<Paginated<JobOffer>> => {
+      const jobAPIFetcher = dataSources.jobAPIFetcher;
+      let jobOffers: JobOffer[];
+      try {
+        jobOffers = await jobAPIFetcher.getJobOffers();
+      } catch (err) {
+        console.log({ err });
         return formatPaginatedResponse({
-          data: jobOffers,
-          totalCount: jobOffers.length,
+          err,
+          totalCount: -1,
         });
-      },
+      }
 
-      joboffer: async (
-        root: any,
-        args: any,
-        context: any
-      ): Promise<JobOffer | Error> => {
-        const jobAPIFetcher: any = context.dataSources.jobAPIFetcher;
-        let jobOffer: JobOffer;
-        // TODO: replace with an id as argument
-        try {
-          jobOffer = await jobAPIFetcher.getJobOffer(1);
-        } catch (err) {
-          console.log({ err });
-          return err;
-        }
-        return jobOffer;
-      },
-    },
-    User: {
-      posts: async (user: any, args: any) => {
-        const { limit }: QueryOptions = args;
-        return formatPaginatedResponse(
-          await db.findSome(
-            "posts",
-            { limit },
-            (post: Post) => post.authorId === user.id
-          )
-        );
-      },
-      comments: async (user: any): Promise<ResponseConnection> => {
-        return formatPaginatedResponse(
-          await db.findSome("comments", { limit: 10 }, (comment: Comment) => {
-            return comment.userId === user.id;
-          })
-        );
-      },
-    },
-    Comment: {
-      author: async (comment: any) => {
-        const authorResult: DBResponseInterface = await db.findOne(
-          "users",
-          (author: User) => author.id === comment.userId
-        );
-        return authorResult.data;
-      },
-      post: async (comment: any) => {
-        const postResult: DBResponseInterface = await db.findOne(
-          "posts",
-          (post: Post) => post.id === comment.postId
-        );
-        return postResult.data;
-      },
-    },
-    Post: {
-      author: async (post: any) => {
-        const authorResult: DBResponseInterface = await db.findOne(
-          "users",
-          (author: User) => author.id === post.authorId
-        );
-        return authorResult.data;
-      },
-      comments: async (post: any): Promise<ResponseConnection> => {
-        return formatPaginatedResponse(
-          await db.findSome(
-            "comments",
-            { limit: 10 },
-            (comment: Comment): boolean => comment.postId === post.id
-          )
-        );
-      },
+      return formatPaginatedResponse({
+        data: jobOffers,
+        totalCount: jobOffers.length,
+      });
     },
 
-    JobOffer: {
-      companyName: (joboffer: any) => joboffer.company.name,
+    joboffer: async (
+      root: IMap,
+      args: IMap,
+      { dataSources }: IGraphQLContext,
+    ): Promise<JobOffer | Error> => {
+      const jobAPIFetcher = dataSources.jobAPIFetcher;
+      let jobOffer: JobOffer;
+      // TODO: replace with an id as argument
+      try {
+        jobOffer = await jobAPIFetcher.getJobOffer(1);
+      } catch (err) {
+        console.log({ err });
+        return err;
+      }
+      return jobOffer;
     },
-  };
+  },
+  User: {
+    posts: async (user: User, args: IMap, { db }: IGraphQLContext): Promise<Paginated<Post>> => {
+      const { limit }: QueryOptions = args;
+      return formatPaginatedResponse(
+        await db.findSome("posts", { limit }, (post: Post) => post.authorId === user.id),
+      );
+    },
+    comments: async (
+      user: User,
+      args: IMap,
+      { db }: IGraphQLContext,
+    ): Promise<Paginated<Comment>> => {
+      return formatPaginatedResponse(
+        await db.findSome("comments", { limit: 10 }, (comment: Comment) => {
+          return comment.userId === user.id;
+        }),
+      );
+    },
+  },
+  Comment: {
+    author: async (comment: Comment, args: IMap, { db }: IGraphQLContext): Promise<User> => {
+      const authorResult: IDBResponse = await db.findOne(
+        "users",
+        (author: User) => author.id === comment.userId,
+      );
+      return authorResult.data as User;
+    },
+    post: async (comment: Comment, args: IMap, { db }: IGraphQLContext): Promise<Post> => {
+      const postResult: IDBResponse = await db.findOne(
+        "posts",
+        (post: Post) => post.id === comment.postId,
+      );
+      return postResult.data as Post;
+    },
+  },
+  Post: {
+    author: async (post: Post, args: IMap, { db }: IGraphQLContext): Promise<User> => {
+      const authorResult: IDBResponse = await db.findOne(
+        "users",
+        (author: User) => author.id === post.authorId,
+      );
+      return authorResult.data as User;
+    },
+    comments: async (
+      post: Post,
+      args: IMap,
+      { db }: IGraphQLContext,
+    ): Promise<Paginated<Comment>> => {
+      return formatPaginatedResponse(
+        await db.findSome(
+          "comments",
+          { limit: 10 },
+          (comment: Comment): boolean => comment.postId === post.id,
+        ),
+      );
+    },
+  },
+
+  JobOffer: {
+    companyName: (joboffer: any): string => joboffer.company.name,
+  },
 };
 
 export default resolvers;

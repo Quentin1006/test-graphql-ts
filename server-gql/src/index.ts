@@ -1,33 +1,23 @@
-import { ApolloServerExpressConfig } from "apollo-server-express";
+import { run } from "./run";
 
-import DBClient from "./modules/db-client";
-import ExpressServer from "./modules/express-server";
-
-import { createTypeDefsAndResolvers } from "./modules/schema";
-import appFactory from "./modules/app";
-
-import { port, jobApiBaseUrl } from "./config";
 import { JobAPIFetcher } from "./modules/datasources";
 
-run();
+import { Adapter, DBClient } from "./entities";
 
-async function run() {
-  const dbClient = new DBClient();
-  const { typeDefs, resolvers } = createTypeDefsAndResolvers(dbClient);
+import { jobApiBaseUrl } from "./config";
 
-  const graphqlOptions: ApolloServerExpressConfig = {
-    typeDefs,
-    resolvers,
-    dataSources: () => ({
-      jobAPIFetcher: new JobAPIFetcher(jobApiBaseUrl),
-    }),
-    context: {},
-    playground: true,
-  };
+import { IDBClient, IAPIFetchersMap } from "./typings";
 
-  const app = appFactory();
-  const server = new ExpressServer(app, { port, graphqlOptions });
-  await Promise.all([dbClient.connect(), server.start()]);
+const dbClient: IDBClient = new DBClient();
+const apiFetchers: IAPIFetchersMap = {
+  jobAPIFetcher: new JobAPIFetcher(jobApiBaseUrl),
+};
 
-  console.log("Application is ready");
+const DBClientAdapter = new Adapter<IDBClient>(dbClient);
+const apiFetcherAdapter = new Adapter<IAPIFetchersMap>(apiFetchers);
+
+try {
+  run(DBClientAdapter, apiFetcherAdapter);
+} catch (error) {
+  console.log(error);
 }
