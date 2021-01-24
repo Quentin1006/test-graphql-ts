@@ -18,9 +18,9 @@ services:
     image: adminer
     restart: always
 
-  service-gql:
+  bff:
     build:
-      context: ./service-gql
+      context: ./bff
     depends_on:
       - db
       - api
