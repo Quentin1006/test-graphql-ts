@@ -1,6 +1,6 @@
 node_modules
 build
-elasticsearch
+data
 pgdata
 .cache
 dist
