@@ -11,20 +11,20 @@ services:
       POSTGRES_DB: dbtest
     volumes:
       - ./db/pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   adminer:
-    image: adminer
+    image: "adminer:4.8.0"
     restart: always
+    ports:
+      - 8080:8080
 
   bff:
-    build:
-      context: ./bff
     depends_on:
       - db
       - api
       - reverse-proxy
+    build:
+      context: ./bff
     environment:
       NODE_ENV: development
       PGHOST: db
@@ -34,12 +34,12 @@ services:
       PGPORT: 5432
       PORT: 3000
       API_URL: http://api:3333
-    ports:
-      - 3000:3000
 
   api:
     depends_on:
       - db
+    build:
+      context: ./api
     environment:
       NODE_ENV: development
       PGHOST: db
@@ -48,8 +48,6 @@ services:
       PGDATABASE: job_platform
       PGPORT: 5432
       PORT: 3333
-    build:
-      context: ./api
 
   reverse-proxy:
     depends_on:
@@ -60,10 +58,38 @@ services:
     ports:
       - 80:80
   ui:
-    environment:
-      NODE_ENV: development
     build:
       context: ./ui
+    environment:
+      NODE_ENV: development
+
+  elasticsearch:
+    image: "elasticsearch:7.10.1"
+    restart: always
+    environment:
+      xpack.security.enabled: "false"
+      discovery.type: single-node
+    volumes:
+      - ./elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+  kibana:
+    depends_on:
+      - elasticsearch
+    image: "kibana:7.10.1"
+    restart: always
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - 5601:5601
+
+  test-server:
+    build:
+      context: ./test-server
+    environment:
+      NODE_ENV: development
 
 volumes:
   pgdata:
+  elasticsearch:
