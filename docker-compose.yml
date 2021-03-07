@@ -62,6 +62,7 @@ services:
       context: ./ui
     environment:
       NODE_ENV: development
+      IS_REACT: "false"
 
   elasticsearch:
     image: "elasticsearch:7.10.1"
