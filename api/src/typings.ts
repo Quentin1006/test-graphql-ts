@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from "pg";
+import { IDBClient } from "./entities";
 
 export enum LogLevel {
   INFO = "info",
@@ -15,15 +15,13 @@ export interface ILogger {
   debug(message: string): void;
 }
 
-export type AppContext<LoggerInstance extends ILogger> = {
-  dbClient: IDBClient;
+export type AppContext<
+  DBClientInstance extends IDBClient,
+  LoggerInstance extends ILogger
+> = {
+  dbClient: DBClientInstance;
   logger: LoggerInstance;
 };
-export interface IDBClient {
-  connect(): Promise<Pool | Error>;
-  query(text: string, params?: any[]): Promise<QueryResult>;
-  stop(): Promise<void>;
-}
 
 export type DBQuery = {
   query: string;
@@ -71,10 +69,10 @@ export interface IJobController {
   getOffers(): Promise<IDataArrayResponse<JobOffer>>;
   getOffer(offerId: number): Promise<IDataArrayResponse<JobOffer>>;
   getOffersFromCompany(
-    companyId: number
+    companyId: number,
   ): Promise<IDataArrayResponse<JobOffer>>;
   createOrUpdateOffer(
-    offerPayload: JobOfferPayload
+    offerPayload: JobOfferPayload,
   ): Promise<IDataArrayResponse<JobOffer>>;
 }
 

@@ -7,23 +7,17 @@ import { loggerConfig } from "./config";
 import indexRouter from "./routes";
 
 // typings
-import { AppContext, IDBClient } from "./typings";
+import { IDBClient } from "./entities";
+import { AppContext } from "./typings";
 
 export default (dbClient: IDBClient): Application => {
   const app: Application = express();
   const logger: Logger = winston.createLogger({
-    transports: [
-      new winston.transports.File(loggerConfig.fileInfo),
-      new winston.transports.File(loggerConfig.fileError),
-    ],
+    transports: [new winston.transports.Console(loggerConfig.console)],
     exitOnError: false, // do not exit on handled exceptions
   });
 
-  if (process.env.NODE_ENV !== "production") {
-    logger.add(new winston.transports.Console(loggerConfig.console));
-  }
-
-  const appCtx: AppContext<Logger> = {
+  const appCtx: AppContext<IDBClient, Logger> = {
     dbClient,
     logger,
   };

@@ -1,9 +1,10 @@
 import { QueryResult } from "pg";
 
+import { IDBClient } from "../entities";
+
 import {
   IDataResponse,
   IDataArrayResponse,
-  IDBClient,
   JobOffer,
   JobOfferPayload,
   IJobController,
@@ -57,7 +58,7 @@ export default (dbClient: IDBClient): IJobController => {
   };
 
   const getOffer = async (
-    offerId: number
+    offerId: number,
   ): Promise<IDataArrayResponse<JobOffer>> => {
     const { query, params } = buildSelectOfferQuery(offerId);
     let result: QueryResult;
@@ -138,13 +139,13 @@ export default (dbClient: IDBClient): IJobController => {
   };
 
   const createOrUpdateOffer = async (
-    offerPayload: JobOfferPayload
+    offerPayload: JobOfferPayload,
   ): Promise<IDataArrayResponse<JobOffer>> => {
     const {
       err,
       data,
     }: IDataResponse<JobOfferPayload> = await JobPayloadSchema.validate(
-      offerPayload
+      offerPayload,
     );
     if (err) {
       return { err, data: [] };
@@ -161,11 +162,11 @@ export default (dbClient: IDBClient): IJobController => {
     try {
       resultOffer = await dbClient.query(offerQuery.query, offerQuery.params);
       const companyQuery = buildSelectCompanyQuery(
-        validatedJobOfferPayload.companyId
+        validatedJobOfferPayload.companyId,
       );
       resultCompany = await dbClient.query(
         companyQuery.query,
-        companyQuery.params
+        companyQuery.params,
       );
     } catch (error) {
       return {

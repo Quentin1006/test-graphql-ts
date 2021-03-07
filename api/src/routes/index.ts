@@ -4,6 +4,8 @@ import { verifyUser } from "./helper";
 import JobController from "../controllers/job.controller";
 import CompanyController from "../controllers/company.controller";
 
+import { IDBClient } from "../entities";
+
 import {
   AppContext,
   ICompanyController,
@@ -14,7 +16,9 @@ import {
 
 const router = express.Router();
 
-export default <Logger extends ILogger>(ctx: AppContext<Logger>): Router => {
+export default <DBClient extends IDBClient, Logger extends ILogger>(
+  ctx: AppContext<DBClient, Logger>,
+): Router => {
   // @TODO: register controller automatically
   const jobController: IJobController = JobController(ctx.dbClient);
   const companyController: ICompanyController = CompanyController(ctx.dbClient);
