@@ -103,8 +103,8 @@ export interface IDataArrayResponse<T> {
   info?: any;
 }
 
-export interface IDataResponse<T> {
-  data?: T;
+export interface IDataResponse<Data> {
+  data?: Data;
   err?: Error;
   info?: any;
 }
