@@ -77,22 +77,12 @@ services:
     ports:
       - 9200:9200
 
-  logstash:
-    build:
-      context: ./elk/logstash
-    ports:
-      - 5044:5044
-    environment:
-      LOG_LEVEL: info
-    links:
-      - elasticsearch
-
   filebeat:
     build:
       context: ./elk/filebeat
     volumes:
       # needed to access all docker logs (read only) :
-      - "/var/lib/docker/containers:/usr/share/dockerlogs/data:ro"
+      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
       # needed to access additional informations about containers
       - "/var/run/docker.sock:/var/run/docker.sock"
 
