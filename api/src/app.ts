@@ -7,8 +7,7 @@ import { loggerConfig } from "./config";
 import indexRouter from "./routes";
 
 // typings
-import { IDBClient } from "./entities";
-import { AppContext } from "./typings";
+import { IAppContext, ILogger, IDBClient } from "./typings";
 
 export default (dbClient: IDBClient): Application => {
   const app: Application = express();
@@ -17,7 +16,7 @@ export default (dbClient: IDBClient): Application => {
     exitOnError: false, // do not exit on handled exceptions
   });
 
-  const appCtx: AppContext<IDBClient, Logger> = {
+  const appCtx: IAppContext<IDBClient, ILogger> = {
     dbClient,
     logger,
   };

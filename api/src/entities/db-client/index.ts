@@ -1,10 +1,6 @@
 import { Pool, QueryResult } from "pg";
 
-export interface IDBClient {
-  connect(): Promise<Pool | Error>;
-  query(text: string, params?: any[]): Promise<QueryResult>;
-  stop(): Promise<void>;
-}
+import { IDBClient } from "../../typings";
 
 class DBClient implements IDBClient {
   protected pool: Pool;

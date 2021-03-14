@@ -1,7 +1,4 @@
-export interface IAdapter {
-  exposed: any;
-}
-
+import { IAdapter } from "../../typings";
 export default class Adapter<T> implements IAdapter {
   public exposed: T;
   constructor(exposed: T) {

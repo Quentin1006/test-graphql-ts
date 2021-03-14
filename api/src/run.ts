@@ -1,4 +1,4 @@
-import { IAdapter } from "./entities";
+import { IAdapter } from "./typings";
 
 const run = async (
   dbClientAdapter: IAdapter,

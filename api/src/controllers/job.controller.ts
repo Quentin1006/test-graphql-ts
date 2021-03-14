@@ -1,10 +1,9 @@
 import { QueryResult } from "pg";
 
-import { IDBClient } from "../entities";
-
 import {
   IDataResponse,
   IDataArrayResponse,
+  IDBClient,
   JobOffer,
   JobOfferPayload,
   IJobController,
