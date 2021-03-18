@@ -1,7 +1,11 @@
 import { QueryResult } from "pg";
 
-import { IDataArrayResponse, Company, ICompanyController } from "../typings";
-import { IDBClient } from "../entities";
+import {
+  IDataArrayResponse,
+  IDBClient,
+  Company,
+  ICompanyController,
+} from "../typings";
 
 export default (dbClient: IDBClient): ICompanyController => {
   const getCompanies = async (): Promise<IDataArrayResponse<Company>> => {

@@ -1,10 +1,22 @@
-import { IDBClient } from "./entities";
+import { Pool, QueryResult } from "pg";
+import { Server } from "http";
 
 export enum LogLevel {
   INFO = "info",
   ERROR = "error",
   DEBUG = "debug",
   WARNING = "warning",
+}
+
+export interface IServer {
+  start(): Promise<Server>;
+  stop(): Promise<boolean>;
+}
+
+export interface IDBClient {
+  connect(): Promise<Pool | Error>;
+  query(text: string, params?: any[]): Promise<QueryResult>;
+  stop(): Promise<void>;
 }
 
 export interface ILogger {
@@ -15,13 +27,17 @@ export interface ILogger {
   debug(message: string): void;
 }
 
-export type AppContext<
+export interface IAdapter {
+  exposed: any;
+}
+
+export interface IAppContext<
   DBClientInstance extends IDBClient,
   LoggerInstance extends ILogger
-> = {
+> {
   dbClient: DBClientInstance;
   logger: LoggerInstance;
-};
+}
 
 export type DBQuery = {
   query: string;
@@ -87,8 +103,8 @@ export interface IDataArrayResponse<T> {
   info?: any;
 }
 
-export interface IDataResponse<T> {
-  data?: T;
+export interface IDataResponse<Data> {
+  data?: Data;
   err?: Error;
   info?: any;
 }

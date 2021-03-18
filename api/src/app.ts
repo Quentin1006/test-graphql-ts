@@ -1,5 +1,6 @@
 import express, { Application } from "express";
-import winston, { Logger } from "winston";
+
+import { Logger } from "./entities";
 
 // Configs
 import { loggerConfig } from "./config";
@@ -7,17 +8,13 @@ import { loggerConfig } from "./config";
 import indexRouter from "./routes";
 
 // typings
-import { IDBClient } from "./entities";
-import { AppContext } from "./typings";
+import { IAppContext, ILogger, IDBClient } from "./typings";
 
 export default (dbClient: IDBClient): Application => {
   const app: Application = express();
-  const logger: Logger = winston.createLogger({
-    transports: [new winston.transports.Console(loggerConfig.console)],
-    exitOnError: false, // do not exit on handled exceptions
-  });
+  const logger: Logger = new Logger(loggerConfig);
 
-  const appCtx: AppContext<IDBClient, Logger> = {
+  const appCtx: IAppContext<IDBClient, ILogger> = {
     dbClient,
     logger,
   };
