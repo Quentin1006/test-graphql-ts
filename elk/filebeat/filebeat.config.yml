@@ -1,8 +1,9 @@
 filebeat.inputs:
   - type: docker
+    enabled: true
     combine_partial: true
     containers:
-      path: "/var/lib/docker/containers"
+      path: /var/lib/docker/containers
       stream: "all"
       ids:
         - "*"
@@ -24,8 +25,8 @@ filebeat.config.modules:
   reload.enabled: false
 
 # setup filebeat to send output to elasticsearch
-output.logstash:
-  hosts: ["http://logstash:5044"]
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
 
 # Write Filebeat own logs only to file to avoid catching them with itself in docker log files
 logging.level: debug
