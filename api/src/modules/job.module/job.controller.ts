@@ -8,7 +8,7 @@ import {
   JobOfferPayload,
   IJobController,
   DBQuery,
-} from "../typings";
+} from "../../typings";
 
 import {
   buildInsertOfferQuery,
@@ -16,11 +16,11 @@ import {
   buildSelectOffersQuery,
   buildSelectOffersFromCompanyQuery,
   buildUpdateOfferQuery,
-} from "../queries/offer.queries";
+} from "../../queries/offer.queries";
 
-import { buildSelectCompanyQuery } from "../queries/company.queries";
+import { buildSelectCompanyQuery } from "../../queries/company.queries";
 
-import JobPayloadSchema from "../schema/offer-payload.schema";
+import JobPayloadSchema from "../../schema/offer-payload.schema";
 
 export default (dbClient: IDBClient): IJobController => {
   const getOffers = async (): Promise<IDataArrayResponse<JobOffer>> => {
@@ -140,12 +140,8 @@ export default (dbClient: IDBClient): IJobController => {
   const createOrUpdateOffer = async (
     offerPayload: JobOfferPayload,
   ): Promise<IDataArrayResponse<JobOffer>> => {
-    const {
-      err,
-      data,
-    }: IDataResponse<JobOfferPayload> = await JobPayloadSchema.validate(
-      offerPayload,
-    );
+    const { err, data }: IDataResponse<JobOfferPayload> =
+      await JobPayloadSchema.validate(offerPayload);
     if (err) {
       return { err, data: [] };
     }

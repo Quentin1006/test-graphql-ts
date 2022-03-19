@@ -21,6 +21,10 @@ export default <DBClient extends IDBClient, Logger extends ILogger>(
 
   router.use("*", verifyUser);
 
+  router.get("/", (req, res) => {
+    res.json({ hello: "Hello From Api" });
+  });
+
   router.get("/job-offers", async (req, res) => {
     const ctrlResponse = await jobController.getOffers();
     res.json(ctrlResponse);

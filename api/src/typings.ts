@@ -1,5 +1,6 @@
 import { Pool, QueryResult } from "pg";
 import { Server } from "http";
+import express from "express";
 
 export enum LogLevel {
   INFO = "info",
@@ -33,7 +34,7 @@ export interface IAdapter {
 
 export interface IAppContext<
   DBClientInstance extends IDBClient,
-  LoggerInstance extends ILogger
+  LoggerInstance extends ILogger,
 > {
   dbClient: DBClientInstance;
   logger: LoggerInstance;
@@ -112,3 +113,8 @@ export interface IDataResponse<Data> {
 export interface IPayloadSchema<Payload> {
   validate(p: Payload): Promise<IDataResponse<Payload>>;
 }
+
+export type Module = {
+  basePath: string;
+  router: express.Router;
+};

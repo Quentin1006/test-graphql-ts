@@ -1,9 +1,14 @@
 import express, { Application } from "express";
+import compression from "compression";
+import cors from "cors";
+import helmet from "helmet";
 
-import { Logger } from "./entities";
+import { Logger, Router } from "./entities";
 
 // Configs
-import { loggerConfig } from "./config";
+import { loggerConfig, corsConfig } from "./config";
+
+import Modules from "./modules";
 
 import indexRouter from "./routes";
 
@@ -18,7 +23,23 @@ export default (dbClient: IDBClient): Application => {
     dbClient,
     logger,
   };
-  app.use("/", indexRouter(appCtx));
+
+  app.use(cors(corsConfig));
+  app.use(compression());
+  app.use(helmet());
+
+  // Instantiate modules
+  const modules = Modules.map((Module) => {
+    return Module(appCtx);
+  });
+
+  // Register routes
+  const appRouter = new Router();
+  modules.forEach(({ basePath, router }) => {
+    appRouter.register(basePath, router);
+  });
+
+  app.use("/", appRouter.router);
 
   return app;
 };
